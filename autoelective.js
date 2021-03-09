@@ -22,7 +22,7 @@
 // !@require     https://unpkg.com/gif-frames@1.0.1?main=bundled
 // @run-at      document-end
 // @connect     sctapi.ftqq.com
-// @connect     amatsukaze.moe
+// @connect     *
 // @license     MIT
 // ==/UserScript==
 
