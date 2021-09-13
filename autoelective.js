@@ -34,6 +34,7 @@ var CIDs = [
 ];
 var student_name = "[Your Name]"
 var student_id = 1789012345;
+var page_number = -1
 var password = "[Your Password]";
 var handleClickId = 0;
 var current_course_name = "";
@@ -184,6 +185,7 @@ function getVerificationImage(callback) {
     document.body.appendChild(tmp);
     let rub = new SuperGif({
         gif: tmp,
+        // git: verification, 
         auto_play: false,
         loop_mode: true,
     });
@@ -273,12 +275,26 @@ function waitClick(elem, delay=3000){
 
     // detect page location: Elective Page
     loc = window.location.toString();
+    // First Page
     re = /https:\/\/elective\.pku\.edu\.cn\/elective2008\/edu\/pku\/stu\/elective\/controller\/supplement\/SupplyCancel\.do.*/
-    if (!re.test(loc)){ // not on login page
+    // Second Page
+    re2 = /https:\/\/elective\.pku\.edu\.cn\/elective2008\/edu\/pku\/stu\/elective\/controller\/supplement\/supplement.jsp.*/
+    if (!re.test(loc) && !re2.test(loc)){ // not on elective page 1st or n-th
         sendNotification('登录不成功,正在试图重新进入!');
-        window.location = 'https://elective.pku.edu.cn/'; // goto main page and end script
+        window.location = 'https://elective.pku.edu.cn/'; // goto main page and retry
         return;
     }
+
+    // Navigate to correct page no.
+    page_selector = document.getElementsByName('netui_row')[0];
+    if(page_selector.selectedIndex !== page_number - 1){
+        page_selector.selectedIndex = page_number - 1;
+        sendNotification(`登录成功,正在进入选课页面第${page_number}页!`)
+        page_selector.onchange();  // This will let page goto correct page number
+        return;
+    }
+
+    // Here, it shall go to correct page and page number.
 
     // notify on start and get verification code
     getVerificationImage((encoded_verify) => {
